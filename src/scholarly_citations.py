@@ -14,7 +14,6 @@ GOOGLE_SCHOLAR_API_URL = "https://serpapi.com/search"
 USER_AGENT = "Mozilla/5.0 Academic Paper Tool"
 DEFAULT_LIMIT = 200
 
-
 # Utility Functions
 def extract_base_domain(url):
     """Extract the base domain from a URL."""
@@ -200,7 +199,7 @@ def get_citations_by_title(title, filename):
     else:
         print("Unable to find citations.")
 
-if __name__ == "__main__":
+def run():
     # === Paths ===
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     data_dir = os.path.join(base_dir, "data")
@@ -208,8 +207,12 @@ if __name__ == "__main__":
 
     # === Load publication title and year ===
     with open(METADATA_PATH, "r", encoding="utf-8") as f:
-        publication_title = f.readline().strip()
-        publication_year = f.readline().strip()
+        lines = [line.strip() for line in f if line.strip()]
+        publication_year = lines[-1]
+        publication_title = " ".join(lines[:-1])
     
     output_filename = "../data/scholarly_citations_output.csv"
     get_citations_by_title(publication_title, output_filename)
+
+if __name__ == "__main__":
+    run()

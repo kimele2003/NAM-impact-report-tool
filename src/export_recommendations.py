@@ -4,12 +4,12 @@ from pyairtable import Table, Api
 import os
 from dotenv import load_dotenv
 
-def run():
-    # Load API key from .env
-    load_dotenv()
-    AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
-    BASE_ID = os.getenv("AIRTABLE_BASE_ID")
+# Load API key from .env
+load_dotenv()
+AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
+BASE_ID = os.getenv("AIRTABLE_BASE_ID")
 
+def run():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     data_path = os.path.join(base_dir, "data", "webscrape_output.csv")
     recommendation_df = pd.read_csv(data_path)
@@ -36,7 +36,7 @@ def run():
 
     for idx, row in recommendation_df.iterrows():
         try:
-            pub_title = str(row.get("Publication Title", "")).strip()
+            pub_title = str(row.get("Title", "")).strip()
             recommendation = str(row.get("Recommendation", "")).replace("*", "").replace('"', '').replace("'", "").strip()
             domain = str(row.get("Domain", "")).strip()
 
@@ -73,17 +73,17 @@ def run():
                 "NAM Explanation": str(row.get("NAM Explanation", "")).strip()
             }
 
-            record_key = (pub_title, recommendation)
-            if record_key in existing_keys:
-                recommendation_table.update(existing_keys[record_key], record_data)
-            else:
-                recommendation_table.create(record_data)
-            
             date_val = row.get("URL Date Last Modified", "")
             if pd.isna(date_val) or str(date_val).strip().lower() in {"nat", "nan"}:
                 record_data["URL Date Last Modified"] = ""
             else:
                 record_data["URL Date Last Modified"] = str(date_val).strip()
+
+            record_key = (pub_title, recommendation)
+            if record_key in existing_keys:
+                recommendation_table.update(existing_keys[record_key], record_data)
+            else:
+                recommendation_table.create(record_data)
 
             success_count += 1
 

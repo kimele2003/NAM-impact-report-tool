@@ -4,12 +4,12 @@ import numpy as np
 from dotenv import load_dotenv
 from pyairtable import Table
 
-def run():
-    # === Load secrets ===
-    load_dotenv()
-    AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
-    BASE_ID = os.getenv("AIRTABLE_BASE_ID")
+# === Load secrets ===
+load_dotenv()
+AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
+BASE_ID = os.getenv("AIRTABLE_BASE_ID")
 
+def run():
     # === File path ===
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     DATA_PATH = os.path.join(BASE_DIR, "data", "scholarly_citations_output.csv")

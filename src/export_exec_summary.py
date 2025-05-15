@@ -4,15 +4,16 @@ from dotenv import load_dotenv
 from pyairtable import Table
 import google.generativeai as genai
 
-def run():
-    # === Load environment variables ===
-    load_dotenv()
-    AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
-    BASE_ID = os.getenv("AIRTABLE_BASE_ID")
-    GENAI_API_KEY = os.getenv("GEMINI_API_KEY")
-    genai.configure(api_key=GENAI_API_KEY)
-    model = genai.GenerativeModel("models/gemini-2.0-flash") 
+# === Load environment variables ===
+load_dotenv()
+AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
+BASE_ID = os.getenv("AIRTABLE_BASE_ID")
+GENAI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+genai.configure(api_key=GENAI_API_KEY)
+model = genai.GenerativeModel("models/gemini-2.0-flash") 
+
+def run():
     # === File paths ===
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     recommendations_path = os.path.join(data_dir, "webscrape_output.csv")
@@ -76,14 +77,12 @@ def run():
             print(f"✅ Creating new summary for: {title}")
             table.create({"Publication Title": title, "Executive Summary": summary})
 
-    # === Run script ===
-    if __name__ == "__main__":
-        try:
-            pub_title, summary_text = generate_executive_summary(recommendations_path, citations_path, cta_input_path)
-            upload_summary_to_airtable(pub_title, summary_text)
-            print("✅ Executive summary uploaded successfully.")
-        except Exception as e:
-            print(f"❗ Error generating or uploading summary: {e}")
+    try:
+        pub_title, summary_text = generate_executive_summary(recommendations_path, citations_path, cta_input_path)
+        upload_summary_to_airtable(pub_title, summary_text)
+        print("✅ Executive summary uploaded successfully.")
+    except Exception as e:
+        print(f"❗ Error generating or uploading summary: {e}")
 
 if __name__ == "__main__":
     run()
