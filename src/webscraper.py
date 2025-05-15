@@ -326,7 +326,7 @@ def run_pipeline():
     # === Paths ===
     base_dir = os.path.dirname(os.path.abspath(__file__)) 
     input_csv = os.path.join(base_dir, '..', 'data', 'cta_search_results.csv')
-    output_csv = os.path.join(base_dir, '..', 'data', 'webscrape_intermediate_output_test.csv')
+    output_csv = os.path.join(base_dir, '..', 'data', 'webscrape_intermediate_output.csv')
 
     with open(input_csv, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
