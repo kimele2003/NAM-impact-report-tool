@@ -188,7 +188,6 @@ def handle_pdf_url(url):
             raise Exception("Error downloading PDF.")
     except Exception as e:
         error_message = f"Error processing PDF URL {url}: {e}"
-        print(error_message)
         return error_message, url, "", ""
 
 
@@ -213,7 +212,7 @@ def extract_pubmed_id(url):
 
 
 def fetch_pubmed_metadata(pmid):
-    """Fetch metadata from PubMed using its API."""
+    """Fetch metadata and article URL from PubMed using its API."""
     base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
     params = {"db": "pubmed", "id": pmid, "retmode": "xml"}
 
@@ -231,7 +230,10 @@ def fetch_pubmed_metadata(pmid):
             mod_date = pub_date_entry.get_text(strip=True)
             break
 
-    return f"{title} {abstract}", mod_date, pub_date
+    pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
+
+    return f"{title} {abstract}", pubmed_url, mod_date, pub_date
+
 
 
 # Federal Register Handling
@@ -255,9 +257,9 @@ def get_federal_register_content(url):
         pub_date = data.get("publication_date", "")
         mod_date = data.get("modified_date", "")
 
-        return f"{title}\n\n{body_text}", mod_date, pub_date
+        return f"{title}\n\n{body_text}", url, mod_date, pub_date
     except Exception as e:
-        return None, "", ""
+        return f"Error processing {url}: {e}", url, "", ""
 
 
 # Main Scraping Logic
