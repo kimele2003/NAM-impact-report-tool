@@ -4,4 +4,12 @@ pyairtable
 requests
 python-dotenv
 re
-google.generativeai
+selenium
+webdriver-manager
+beautifulsoup4
+google-generativeai
+tldextract
+htmldate
+PyPDF2
+chromedriver-autoinstaller
+tldextract
