@@ -33,9 +33,12 @@ with open(METADATA_PATH, "r", encoding="utf-8") as f:
     publication_year = f.readline().strip()
 
 # === Create output path ===
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # e.g., 20240514_145700
-safe_title = re.sub(r'\W+', '_', publication_title.strip())[:40] or "Untitled"
-filename = f"{safe_title}_{timestamp}_CTA_Links.csv"
+# timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # e.g., 20240514_145700
+# safe_title = re.sub(r'\W+', '_', publication_title.strip())[:40] or "Untitled"
+# filename = f"{safe_title}_{timestamp}_CTA_Links.csv"
+# OUTPUT_CSV = os.path.join(data_dir, filename)
+
+filename = "cta_search_results.csv"
 OUTPUT_CSV = os.path.join(data_dir, filename)
 
 # === STEP 1: Extract CTA blocks ===
@@ -52,17 +55,18 @@ def generate_search_queries_for_ctas(cta_list):
     all_queries = []
     for cta in cta_list:
         prompt = f"""
-            You are a health policy analyst. For the following Call to Action (CTA), identify key stakeholders and generate 1–5 specific Google search queries that could be used to find real-world mentions or implementation updates.
+            You are a health policy analyst. For the following Call to Action (CTA), identify key stakeholders and generate 3 flexible Google search queries that could be used to find real-world mentions or updates.
 
-            Use one of these trusted domains **per query**:
+            Each query should use one of these trusted domains:
             site:usa.gov, site:nih.gov, site:hhs.gov, site:who.int, site:pubmed.ncbi.nlm.nih.gov, site:nytimes.com
 
-            Keep search queries flexible.
+            Avoid overly rigid or overly quoted phrasing. Use combinations of key terms that are likely to co-occur in real-world reporting.
 
             Format:
             CTA: ...
             Stakeholders: ...
             Search Queries:
+            - ...
             - ...
             - ...
 
@@ -152,9 +156,10 @@ def compile_results(cta_queries, api_key, cse_id, publication_title="", publicat
                 })
     return pd.DataFrame(rows)
 
-# === Run full pipeline ===
-cta_list = extract_cta_blocks(cta_output)
-query_outputs = generate_search_queries_for_ctas(cta_list)
-df = compile_results(query_outputs, GOOGLE_API_KEY, GOOGLE_CSE_ID, publication_title, publication_year)
-df.to_csv(OUTPUT_CSV, index=False)
-print(f"Results saved to {OUTPUT_CSV}")
+if __name__ == "__main__":
+    # === Run full pipeline ===
+    cta_list = extract_cta_blocks(cta_output)
+    query_outputs = generate_search_queries_for_ctas(cta_list)
+    df = compile_results(query_outputs, GOOGLE_API_KEY, GOOGLE_CSE_ID, publication_title, publication_year)
+    df.to_csv(OUTPUT_CSV, index=False)
+    print(f"{len(df)} rows written to {OUTPUT_CSV}")

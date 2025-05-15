@@ -49,3 +49,6 @@ CTA_OUTPUT_PATH = os.path.join(base_dir, "data", "cta_output.txt")
 with open(CTA_OUTPUT_PATH, "w", encoding="utf-8") as f:
     f.write(cta_output)
 print(f"✅ CTA output saved to {CTA_OUTPUT_PATH}")
+
+if __name__ == "__main__":
+    run()
