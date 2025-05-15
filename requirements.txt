@@ -3,7 +3,6 @@ numpy
 pyairtable
 requests
 python-dotenv
-re
 selenium
 webdriver-manager
 beautifulsoup4

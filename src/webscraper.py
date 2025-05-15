@@ -93,8 +93,7 @@ def scrape_text_with_selenium(url):
 
         current_url = driver.current_url
 
-
-        if extract_base_domain(current_url) == "hhs.gov":
+        if extract_base_domain(current_url) == "hhs.gov" or "ncbi.nlm.nih.gov" in current_url:
             mod_date = ""
             pub_date = ""
         else:
@@ -341,8 +340,10 @@ def parse_gemini_response(response_text):
 
 
 # Main Pipeline
-def run_pipeline(input_csv, output_csv):
+def run_pipeline():
     """Run the scraping and Gemini pipeline."""
+    input_csv = '../data/cta_search_results.csv'
+    output_csv = '../data/webscrape_output.csv'
     with open(input_csv, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         rows = list(reader)
@@ -375,3 +376,6 @@ def run_pipeline(input_csv, output_csv):
                 gemini_response = query_gemini(preview, url, recommendation)
                 evidence, explanation, citation, nam_mentioned, nam_explanation = parse_gemini_response(gemini_response)
                 writer.writerow([title, year, domain, url, url_title, preview, recommendation, evidence, explanation, citation, nam_mentioned, nam_explanation, mod_date, pub_date, source_date, last_modified])
+
+if __name__ == "__main__":
+    run_pipeline()

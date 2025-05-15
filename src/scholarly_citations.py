@@ -190,14 +190,26 @@ def get_citations_by_title(title, filename):
     paper_id = search_paper_by_title(title)
     if paper_id:
         citations = get_citations_with_context(paper_id)
-        filename = f"citations_{paper_id[:10]}.csv"
         save_to_csv(citations, filename)
 
     # Fallback to Google Scholar
     cites_id = search_paper_google_scholar(title)
     if cites_id:
         citations = get_citing_papers_google_scholar(cites_id)
-        filename = "google_scholar_citations.csv"
         save_to_csv(citations, filename)
+    else:
+        print("Unable to find citations.")
 
-    print("Unable to find citations.")
+if __name__ == "__main__":
+    # === Paths ===
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    data_dir = os.path.join(base_dir, "data")
+    METADATA_PATH = os.path.join(data_dir, "metadata.txt")
+
+    # === Load publication title and year ===
+    with open(METADATA_PATH, "r", encoding="utf-8") as f:
+        publication_title = f.readline().strip()
+        publication_year = f.readline().strip()
+    
+    output_filename = "../data/scholarly_citations_output.csv"
+    get_citations_by_title(publication_title, output_filename)
