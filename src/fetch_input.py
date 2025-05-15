@@ -29,9 +29,12 @@ def run():
             # Mark as processed to avoid reprocessing
             table.update(record["id"], {"Processed": True})
 
-            # Save to file
-            os.makedirs("data", exist_ok=True)
-            with open("data/CTA_input.txt", "w", encoding="utf-8") as f:
+            # Save to file in repo root
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            data_dir = os.path.join(base_dir, "data")
+            os.makedirs(data_dir, exist_ok=True)
+
+            with open(os.path.join(data_dir, "cta_input.txt"), "w", encoding="utf-8") as f:
                 f.write(ctas_text)
 
             return
