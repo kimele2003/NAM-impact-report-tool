@@ -13,3 +13,4 @@ htmldate
 PyPDF2
 chromedriver-autoinstaller
 tldextract
+datetime
