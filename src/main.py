@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 import fetch_input
 import extract_ctas
 import generate_links
-import webscraper
+import webscraper 
+import assess_evidence
 import scholarly_citations
 
 # Step 2: Export results
@@ -28,18 +29,21 @@ def main():
     generate_links.run()
 
     print("🕸️ Step 4: Running webscraper (placeholder)...")
-    webscraper.run_pipeline()
+    webscraper.run()
 
-    print("📚 Step 5: Gathering scholarly citations (placeholder)...")
+    print("🕸️ Step 5: Assessing evidence.")
+    assess_evidence.run()
+
+    print("📚 Step 6: Gathering scholarly citations (placeholder)...")
     scholarly_citations.run()
 
-    print("📤 Step 6: Exporting recommendations to Airtable...")
+    print("📤 Step 7: Exporting recommendations to Airtable...")
     export_recommendations.run()
 
-    print("📤 Step 7: Exporting scholarly citations to Airtable...")
+    print("📤 Step 8: Exporting scholarly citations to Airtable...")
     export_scholarly_citations.run()
 
-    print("📝 Step 8: Generating and uploading executive summary...")
+    print("📝 Step 9: Generating and uploading executive summary...")
     export_exec_summary.run()
 
     print("\n✅ Pipeline complete!")

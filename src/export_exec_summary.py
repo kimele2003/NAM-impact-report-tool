@@ -22,8 +22,6 @@ def run():
 
     # === Executive Summary Generator ===
     def generate_executive_summary(reco_path, citations_path, excerpt_path):
-        import pandas as pd
-
         reco_df = pd.read_csv(reco_path)
         cite_df = pd.read_csv(citations_path)
 

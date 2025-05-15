@@ -46,7 +46,6 @@ def configure_chrome_options(headless=True):
     chrome_options.add_argument(f"user-agent={USER_AGENT}")
     return chrome_options
 
-
 def extract_base_domain(url):
     """Extract the base domain from a URL."""
     extracted = tldextract.extract(url)
@@ -55,11 +54,24 @@ def extract_base_domain(url):
 
 def get_url_date_last_modified(mod_date, pub_date, source_date):
     """Determine the most relevant date for a URL."""
+    custom_formats = ['%Y%b%d', '%Y%b', '%Y']
+
     for date in [mod_date, pub_date, source_date]:
         if pd.notna(date):
+            # Try automatic parsing first
             date_obj = pd.to_datetime(date, errors='coerce')
+            
+            # If automatic parsing fails, try custom formats
+            if pd.isna(date_obj):
+                for fmt in custom_formats:
+                    try:
+                        date_obj = pd.to_datetime(date, format=fmt)
+                        break
+                    except (ValueError, TypeError):
+                        continue
             if pd.notna(date_obj):
                 return date_obj.date()
+    
     return pd.NaT
 
 
@@ -196,26 +208,34 @@ def extract_pubmed_id(url):
     """Extract PubMed ID from a URL."""
     pubmed_match = re.search(r'pubmed\.ncbi\.nlm\.nih\.gov/(\d+)', url)
     if pubmed_match:
-        return pubmed_match.group(1)
+        return 'article', pubmed_match.group(1)
 
+    time.sleep(0.1) 
     pmc_match = re.search(r'pmc\.ncbi\.nlm\.nih\.gov/articles/(PMC\d+)', url)
     if pmc_match:
         pmc_id = pmc_match.group(1)
-        api_url = f"https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?tool=my_tool&email=your_email@example.com&ids={pmc_id}&format=json"
+        api_url = f"https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?tool=my_tool&email=shreyark@mit.edu&ids={pmc_id}&format=json"
         response = requests.get(api_url)
         if response.ok:
             data = response.json()
             records = data.get("records", [])
             if records and "pmid" in records[0]:
-                return records[0]["pmid"]
-    return None
+                return 'article', records[0]["pmid"]
+    
+    book_match = re.search(r'ncbi\.nlm\.nih\.gov/books/(NBK\d+)', url)
+    if book_match:
+        return 'book', book_match.group(1)
+    
+    return None, None
 
 
-def fetch_pubmed_metadata(pmid):
+def fetch_pubmed_metadata_article(pmid):
     """Fetch metadata and article URL from PubMed using its API."""
     base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-    params = {"db": "pubmed", "id": pmid, "retmode": "xml"}
+    api_key = os.getenv("NCBI_API_KEY")
+    params = {"db": "pubmed", "id": pmid, "retmode": "xml", "api_key": api_key}
 
+    time.sleep(0.1) 
     response = requests.get(base_url + "efetch.fcgi", params=params)
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'xml')
@@ -229,11 +249,26 @@ def fetch_pubmed_metadata(pmid):
         if pub_date_entry.get("PubStatus") == "revised":
             mod_date = pub_date_entry.get_text(strip=True)
             break
-
     pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
 
     return f"{title} {abstract}", pubmed_url, mod_date, pub_date
 
+
+def fetch_pubmed_metadata_book(book_id):
+    """Fetch metadata from PubMed Books."""
+    base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+    api_key = os.getenv("NCBI_API_KEY")
+    params = {"db": "books", "id": book_id, "retmode": "xml", "api_key": api_key}
+
+    response = requests.get(base_url + "efetch.fcgi", params=params)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.content, 'xml')
+
+    title = soup.find("BookDocument").find("BookTitle").get_text(strip=True) if soup.find("BookTitle") else "No title available."
+    abstract = soup.find("Abstract").get_text(strip=True) if soup.find("Abstract") else "No abstract available."
+
+    book_url = f"https://www.ncbi.nlm.nih.gov/books/{book_id}/"
+    return f"{title} {abstract}", book_url, "", ""  # Dates not usually included
 
 
 # Federal Register Handling
@@ -266,12 +301,15 @@ def get_federal_register_content(url):
 def scrape_url(url):
     """Scrape content from a URL, handling special cases like PDFs and PubMed."""
     try:
-        if url.lower().endswith(".pdf"):
+        if '.pdf' in url.lower():
             return handle_pdf_url(url)
 
-        pmid = extract_pubmed_id(url)
+        format, pmid = extract_pubmed_id(url)
         if pmid:
-            return fetch_pubmed_metadata(pmid)
+            if format == 'article':
+                return fetch_pubmed_metadata_article(pmid)
+            else:
+                return fetch_pubmed_metadata_book(pmid)
 
         if is_federal_register_url(url):
             resolved_url = solve_captcha_manually(url)
@@ -279,73 +317,17 @@ def scrape_url(url):
 
         return scrape_text_with_selenium(url)
     except Exception as e:
-        try:
-            resolved_url = solve_captcha_manually(url)
-            return scrape_text_with_selenium(resolved_url)
-        except Exception as e:
-            return f"Error processing {url}: {e}", url, "", ""
-
-
-# Query Gemini
-def query_gemini(text, source_url, recommendation):
-    """Query Gemini with structured prompt."""
-    prompt = f"""
-    You're helping verify whether a text provides evidence of action on a recommendation or priority from the National Academy of Medicine (NAM). Use the definitions below and respond in the exact format that follows.
-
-    **Definitions:**
-    - EVIDENCE:
-        - yes = there is clear evidence that the recommended action has been completed or is actively being implemented.
-        - partially = there is some indication of progress or intent to act, but the action is not fully completed or confirmed.
-        - no = there is no meaningful indication that the action has been taken.
-    - NATIONAL_ACADEMY_OF_MEDICINE_MENTIONED:
-        - yes = NAM is explicitly referenced as a source of inspiration, proponent or in connection with a recommendation or priority.
-        - no = NAM is not being referenced in this context.
-
-    **The recommendation / priority you are evaluating is:**
-    {recommendation}
-
-    Please take your time to think through the text step by step. First consider what the text is about and then compare that to the recommendation. Provide a verbal explanation of your reasoning process before you answer.
-    Consider whether the text provides evidence that the recommendation or priority is being functionally met, even if it doesn't explicitly state so in the same words or uses different language. Once you have reasoned through the content, respond in the exact format given below, based on your conclusion.
-    If there is not any evidence of action that's okay too since this task often requires careful interpretation, and absence of evidence is still a valid and useful finding.
-
-    **Please respond in this exact format:**
-    EVIDENCE: [yes | no | partially]
-    EXPLANATION: [detailed reasoning explaining why the evidence does or does not support the recommendation]
-    CITATION: [short quote from the text supporting the explanation, if EVIDENCE is yes or partially; otherwise write "N/A"]
-    NATIONAL_ACADEMY_OF_MEDICINE_MENTIONED: [yes | no]
-    NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A"]
-
-    **Text to analyze from {source_url}:**
-    {text}
-    """
-
-    response = model.generate_content(prompt)
-    return response.text
-
-
-def parse_gemini_response(response_text):
-    """Parse structured response from Gemini."""
-    evidence = explanation = citation = nam_mentioned = nam_explanation = "N/A"
-    for line in response_text.splitlines():
-        line = line.strip()
-        if line.lower().startswith("evidence:"):
-            evidence = line.split(":", 1)[-1].strip().lower()
-        elif line.lower().startswith("explanation:"):
-            explanation = line.split(":", 1)[-1].strip()
-        elif line.lower().startswith("citation:"):
-            citation = line.split(":", 1)[-1].strip()
-        elif line.lower().startswith("national_academy_of_medicine_mentioned:"):
-            nam_mentioned = line.split(":", 1)[-1].strip().lower()
-        elif line.lower().startswith("nam_explanation:"):
-            nam_explanation = line.split(":", 1)[-1].strip()
-    return evidence, explanation, citation, nam_mentioned, nam_explanation
+        return f"Error processing {url}: {e}", url, "", ""
 
 
 # Main Pipeline
 def run_pipeline():
     """Run the scraping and Gemini pipeline."""
-    input_csv = '../data/cta_search_results.csv'
-    output_csv = '../data/webscrape_output.csv'
+    # === Paths ===
+    base_dir = os.path.dirname(os.path.abspath(__file__)) 
+    input_csv = os.path.join(base_dir, '..', 'data', 'cta_search_results.csv')
+    output_csv = os.path.join(base_dir, '..', 'data', 'webscrape_intermediate_output_test.csv')
+
     with open(input_csv, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         rows = list(reader)
@@ -354,8 +336,7 @@ def run_pipeline():
         writer = csv.writer(output_file)
         writer.writerow([
             "Title", "Publication Year", "Domain", "URL", "URL Title", "Extracted Content", "Recommendation",
-            "Is Evidence of Action", "Explanation of Relevance", "Citation from Text", "NAM Mentioned", "NAM Explanation",
-            "Date Last Modified", "Date Published", "Source Date", "URL Date Last Modified"
+            "URL Date Last Modified"
         ])
 
         for row in rows:
@@ -369,15 +350,13 @@ def run_pipeline():
 
             text, final_url, mod_date, pub_date = scrape_url(url)
             domain = extract_base_domain(final_url)
-            last_modified = get_url_date_last_modified(mod_date, pub_date, source_date)
-
+            last_modified_date = get_url_date_last_modified(mod_date, pub_date, source_date)
             if text.startswith("Error"):
-                writer.writerow([title, year, domain, url, url_title, "", recommendation, "no", "", "N/A", "no", "N/A", "", "", source_date, source_date])
+                print(f"Error scraping {url}: {text}")
+                writer.writerow([title, year, domain, url, url_title, "", recommendation, last_modified_date])
             else:
                 preview = text[:100000]
-                gemini_response = query_gemini(preview, url, recommendation)
-                evidence, explanation, citation, nam_mentioned, nam_explanation = parse_gemini_response(gemini_response)
-                writer.writerow([title, year, domain, url, url_title, preview, recommendation, evidence, explanation, citation, nam_mentioned, nam_explanation, mod_date, pub_date, source_date, last_modified])
+                writer.writerow([title, year, domain, url, url_title, preview, recommendation, last_modified_date])
 
 if __name__ == "__main__":
     run_pipeline()
