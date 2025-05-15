@@ -1,0 +1,7 @@
+pandas
+numpy
+pyairtable
+requests
+python-dotenv
+re
+google.generativeai
