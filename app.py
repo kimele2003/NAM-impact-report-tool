@@ -1,13 +1,8 @@
 from flask import Flask, request
 import threading
+from src.main import main
 
 app = Flask(__name__)
-
-# @app.route('/trigger', methods=['POST'])
-# def trigger_script():
-#     data = request.json
-#     print("Received from Airtable:", data)
-#     return {'status': 'OK'}, 200
 
 @app.route('/trigger', methods=['POST'])
 def trigger_script():
@@ -17,7 +12,9 @@ def trigger_script():
 
 def run_my_script(data):
     print("Running script with:", data)
-    # Your existing logic here
+    main()
+    
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
