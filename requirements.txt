@@ -13,3 +13,4 @@ PyPDF2
 chromedriver-autoinstaller
 tldextract
 datetime
+flask

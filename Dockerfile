@@ -1,21 +1,28 @@
 # Use a slim Python base image
 FROM python:3.10-slim
 
+ENV PYTHONPATH=/NAM-impact-report-tool
+
 # Set the working directory
-WORKDIR /app
+WORKDIR /NAM-impact-report-tool
 
-# Copy all files into the container
-COPY . .
-
-# Install system dependencies and run setup.sh
-RUN apt-get update -q && apt-get install -y -q wget curl unzip gnupg2 && \
-    chmod +x setup.sh && ./setup.sh && \
+RUN apt-get update -q && apt-get install -y -q --no-install-recommends \
+    wget curl unzip gnupg2 && \
     rm -rf /var/lib/apt/lists/*
+
+# Copy only requirements.txt first to leverage Docker caching
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 8080 (used by Google Cloud Run)
+# Copy the rest of the application code
+COPY . .
+
+# Run setup.sh to configure the environment
+RUN chmod +x setup.sh && ./setup.sh && rm -rf /var/lib/apt/lists/*
+
+# Expose port 8080 (used by Flask app)
 EXPOSE 8080
 
 # Run the Flask app
