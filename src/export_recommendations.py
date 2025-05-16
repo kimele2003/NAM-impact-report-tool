@@ -75,7 +75,7 @@ def run():
 
             date_val = row.get("URL Date Last Modified", "")
             if pd.isna(date_val) or str(date_val).strip().lower() in {"nat", "nan"}:
-                record_data["URL Date Last Modified"] = None
+                record_data["URL Date Last Modified"] = "1900-01-01"
             else:
                 record_data["URL Date Last Modified"] = str(date_val).strip()
 
