@@ -200,6 +200,12 @@ def get_citations_by_title(title, filename):
         save_to_csv(citations, filename)
     else:
         print("Unable to find citations.")
+        with open(filename, "w", newline='', encoding="utf-8") as output_file:
+            writer = csv.writer(output_file)
+            writer.writerow([
+                "Title", "Publication Year", "Domain", "URL", "URL Title", "Extracted Content", "Recommendation",
+                "URL Date Last Modified"
+            ])
 
 def run():
     # === Paths ===

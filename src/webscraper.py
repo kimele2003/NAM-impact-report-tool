@@ -373,7 +373,7 @@ def run():
             url = row["URL"]
             print(f"Processing: {url}")
             
-            text, final_url, mod_date, pub_date = scrape_url(url)
+            text, final_url, mod_date, pub_date = scrape_with_timeout(url)
             
             domain = extract_base_domain(final_url)
             last_modified_date = get_url_date_last_modified(mod_date, pub_date, source_date)

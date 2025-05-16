@@ -40,7 +40,7 @@ def query_gemini(text, source_url, recommendation):
     NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A"]
 
     Text to analyze from {source_url}:
-    {text[:50000]}
+    {text[:100000]}
     """
     response = model.generate_content(prompt)
     return response.text
@@ -76,7 +76,7 @@ def query_gemini_multiple(text, source_url, recommendation):
     NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A"]
 
     Text to analyze from {source_url}:
-    {text[:50000]}
+    {text[:100000]}
     """
 
     # Query Gemini three times
@@ -105,8 +105,8 @@ def query_gemini_multiple(text, source_url, recommendation):
     Response 2:
     {responses[1]}
 
-    Response 3:
-    {responses[2]}
+    # Response 3:
+    # {responses[2]}
 
     **Instructions**:
     - Carefully evaluate the reasoning and conclusions in each response.
@@ -123,7 +123,7 @@ def query_gemini_multiple(text, source_url, recommendation):
     FINAL_NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A. don't reference that there are multiple responses, just provide your final explanation, as if it were the only response."]
     
     Text to analyze from {source_url}:
-    {text[:50000]}
+    {text[:100000]}
     
     """
 
@@ -182,7 +182,7 @@ def run():
                                  "no", "Unable to retrieve data", "N/A", "no", "N/A", row["URL Date Last Modified"]])
             else:
                 try:
-                    gemini_response = query_gemini(text, url, recommendation)
+                    gemini_response = query_gemini_multiple(text, url, recommendation)
                     evidence, explanation, citation, nam_mentioned, nam_explanation = parse_gemini_response(gemini_response)
                     writer.writerow([row["Title"], row["Publication Year"], row["Domain"], url, row["URL Title"], text, recommendation,
                                  evidence, explanation, citation, nam_mentioned, nam_explanation, row["URL Date Last Modified"]])
