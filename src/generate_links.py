@@ -6,6 +6,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import google.generativeai as genai
 from datetime import datetime
+import random
 
 # === Load environment variables ===
 load_dotenv()
@@ -19,15 +20,15 @@ model = genai.GenerativeModel("models/gemini-2.0-flash")
 
 # === STEP 1: Extract CTA blocks ===
 def extract_cta_blocks(cta_output):
-    matches = re.findall(
-        r"(?s)(?:\*+\s*)?(Recommendation\s+\d+:.*?)(?=(?:\n\s*\*+\s*)?(Recommendation\s+\d+:|$))",
-        cta_output,
-        re.IGNORECASE
+    pattern = re.compile(
+        r"((?:Recommendation|Priority)\s+[A-D]?(?:\d+)?(?:[-.]\d+)?\s*:.*?)(?=\n(?:Recommendation|Priority)\s+[A-D]?(?:\d+)?(?:[-.]\d+)?\s*:|\Z)",
+        re.DOTALL | re.IGNORECASE,
     )
-    return [m[0].strip() for m in matches]
+    return [m.strip() for m in pattern.findall(cta_output)]
 
 # === STEP 2: Generate search queries using Gemini ===
 def generate_search_queries_for_ctas(cta_list):
+    print(f"📌 Number of CTAs passed in: {len(cta_list)}")
     all_queries = []
     for cta in cta_list:
         print("📌 Extracted CTA:\n", cta)
@@ -50,9 +51,14 @@ def generate_search_queries_for_ctas(cta_list):
             CTA:
             "{cta}"
             """
-        response = model.generate_content(prompt)
-        all_queries.append(response.text.strip())
-        print("🔍 Gemini output for CTA:\n", response.text.strip(), "\n---")
+        try:
+            response = model.generate_content(prompt)
+            all_queries.append(response.text.strip())
+            print("🔍 Gemini output for CTA:\n", response.text.strip(), "\n---")
+        except Exception as e:
+            print(f"❗ Gemini API error: {e}")
+            all_queries.append("Gemini request failed.")
+        time.sleep(5)  # Add delay between requests
     return all_queries
 
 # === STEP 3: Google search for each query ===
@@ -110,7 +116,7 @@ def compile_results(cta_queries, api_key, cse_id, publication_title="", publicat
 
         queries_block = re.search(r"Search Queries:\s*(.+)", block, re.DOTALL)
         query_matches = re.findall(r"(?:[-*]|\d+\.)\s+(.+)", queries_block.group(1)) if queries_block else []
-        query_matches = query_matches[:2]  # limit to 2 per CTA
+        query_matches = random.sample(query_matches, k=min(2, len(query_matches)))  # limit to 2 per CTA
 
         print(f"✅ Queries extracted:\n{query_matches}\n---")
         if not query_matches:
