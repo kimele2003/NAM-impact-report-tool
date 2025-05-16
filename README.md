@@ -18,7 +18,7 @@ If you submit the analyze publication form below, in 10-30 minutes the output sh
 
 ---
 
-## Example Input
+## Example Analyze Publication Form Input
 
 Publication Title: Heritable Human Genome Editing
 
@@ -231,6 +231,7 @@ NCBI_API_KEY=your_ncbi_api_key
 ---
 
 ## How to Run
+First, submit the [Analyze Publication Form](https://airtable.com/appUVmalqSjgpivpw/pagw5kixW9UnGvN5k/form)
 
 ### Run the full pipeline
 ```
