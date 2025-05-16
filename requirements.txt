@@ -14,4 +14,3 @@ chromedriver-autoinstaller
 tldextract
 datetime
 flask
-random
