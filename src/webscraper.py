@@ -321,7 +321,7 @@ def scrape_url(url):
 
 
 # Main Pipeline
-def run_pipeline():
+def run():
     """Run the scraping and Gemini pipeline."""
     # === Paths ===
     base_dir = os.path.dirname(os.path.abspath(__file__)) 
@@ -359,4 +359,4 @@ def run_pipeline():
                 writer.writerow([title, year, domain, url, url_title, preview, recommendation, last_modified_date])
 
 if __name__ == "__main__":
-    run_pipeline()
+    run()
