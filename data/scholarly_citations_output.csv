@@ -1,31 +1,31 @@
-title,venue,url,contexts,year
-"Past, present, and future of CRISPR genome editing technologies",cell.com,https://www.cell.com/cell/abstract/S0092-8674(24)00111-9,,2024
-Understanding the genetics of human infertility,science.org,https://www.science.org/doi/abs/10.1126/science.adf7760,,2023
-Chromothripsis as an on-target consequence of CRISPR–Cas9 genome editing,nature.com,https://www.nature.com/articles/s41588-021-00838-7,,2021
-Recent advances in CRISPR-based genome editing technology and its applications in cardiovascular research,springer.com,https://link.springer.com/article/10.1186/s40779-023-00447-x,,2023
-CRISPR in public health: The health equity implications and role of community in gene-editing research and applications,aphapublications.org,https://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2023.307315,,2023
-Multifaceted regulation and functions of 53BP1 in NHEJ‑mediated DSB repair,spandidos-publications.com,https://www.spandidos-publications.com/ijmm/50/1/90,,2022
-Meiotic recombination: insights into its mechanisms and its role in human reproduction with a special focus on non-obstructive azoospermia,oup.com,https://academic.oup.com/humupd/article-abstract/28/6/763/6591785,,2022
-CRISPR nuclease off-target activity and mitigation strategies,frontiersin.org,https://www.frontiersin.org/articles/10.3389/fgeed.2022.1050507/full,,2022
-"You can't keep a bad idea down: Dark history, death, and potential rebirth of eugenics",wiley.com,https://anatomypubs.onlinelibrary.wiley.com/doi/abs/10.1002/ar.24849,,2022
-Correction of RNA splicing defect in β654-thalassemia mice using CRISPR/Cas9 gene-editing technology,nih.gov,https://pmc.ncbi.nlm.nih.gov/articles/PMC9152980/,,2021
-Pediatric and adolescent oncofertility in male patients—From alpha to omega,mdpi.com,https://www.mdpi.com/2073-4425/12/5/701,,2021
-The ethical status of germline gene editing in future space missions: The special case of positive selection on Earth for future space missions,springer.com,https://link.springer.com/article/10.1007/s11569-023-00438-1,,2023
-"Current landscape of gene‐editing technology in biomedicine: Applications, advantages, challenges, and perspectives",wiley.com,https://onlinelibrary.wiley.com/doi/abs/10.1002/mco2.155,,2022
-Modular Ontologies for Genetically Modified People and their Bioethical Implications,springer.com,https://link.springer.com/article/10.1007/s11569-024-00459-4,,2024
-Self-organization in embryonic development: myth and reality,springer.com,https://link.springer.com/chapter/10.1007/978-3-031-04783-1_8,,2022
-The intelligence spectrum: Unraveling the path from ani to asi,jcbi.org,https://jcbi.org/index.php/Main/article/view/779,,2024
-Trisomic rescue via allele-specific multiple chromosome cleavage using CRISPR-Cas9 in trisomy 21 cells,oup.com,https://academic.oup.com/pnasnexus/article-abstract/4/2/pgaf022/8016019,,2025
-Dynamics of reproductive genetic technologies: Perspectives of professional stakeholders,plos.org,https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0269719,,2022
-"In Utero Therapies, the Next Frontier",wiley.com,https://onlinelibrary.wiley.com/doi/abs/10.1002/ajmg.c.32135,,2025
-Governing heritable human genome editing: a textual history and a proposal for the future,liebertpub.com,https://www.liebertpub.com/doi/abs/10.1089/crispr.2021.0043,,2021
-DNA Double Strand Breaks cause chromosome loss through sister chromatid tethering in human embryos,biorxiv.org,https://www.biorxiv.org/content/10.1101/2022.03.10.483502.abstract,,2022
-The Art of Nanoimmunobiotechnomedicine in Stem Cells and Gene Editing,jelsciences.com,https://ipv4.jelsciences.com/articles/jbres1804.pdf,,2023
-As Gods: A Moral History of the Genetic Age,.,,,2022
-Early zygotic engineering promotes targeted large transgene integration and direct production of fully transgenic animals,biorxiv.org,https://www.biorxiv.org/content/10.1101/2024.09.29.615605.abstract,,2024
-DSB repair kinetics impair CRISPR-Cas9 editing in human embryos,biorxiv.org,https://www.biorxiv.org/content/10.1101/2025.05.07.652614.abstract,,2025
-The Genetic Age: Our Perilous Quest to Edit Life,google.com,https://books.google.com/books?hl=en&lr=&id=LqNTEAAAQBAJ&oi=fnd&pg=PP22&ots=4niEImRgfR&sig=RWOYoXq3p5aPvoFo5LBDGu9PB8I,,2022
-"In utero fetal therapy: Stem cells, cell transplantation, gene therapy, and CRISPR-Cas9",lww.com,"https://journals.lww.com/clinicalobgyn/fulltext/2021/12000/In_Utero_Fetal_Therapy__Stem_Cells,_Cell.15.aspx",,2021
-Bioethical Decision Making and Genome Editing,springer.com,https://link.springer.com/chapter/10.1007/978-3-031-29451-8_3,,2023
-БЕСПЛОДИЕ–ГЛОБАЛЬНАЯ МЕДИКОСОЦИАЛЬНАЯ ПРОБЛЕМА МИРОВОГО СООБЩЕСТВА,cyberleninka.ru,https://cyberleninka.ru/article/n/besplodie-globalnaya-medikosotsialnaya-problema-mirovogo-soobschestva,,2024
-Human Heritable Genome Editing-Potential and Current Status for Clinical Use.,ris.org.in,https://www.ris.org.in/sites/default/files/2021-09/ABDR%20March%202021.pdf#page=11,,2021
+publication,title,venue,url,contexts,year
+Heritable Human Genome Editing,"Past, present, and future of CRISPR genome editing technologies",cell.com,https://www.cell.com/cell/abstract/S0092-8674(24)00111-9,,2024
+Heritable Human Genome Editing,Understanding the genetics of human infertility,science.org,https://www.science.org/doi/abs/10.1126/science.adf7760,,2023
+Heritable Human Genome Editing,Chromothripsis as an on-target consequence of CRISPR–Cas9 genome editing,nature.com,https://www.nature.com/articles/s41588-021-00838-7,,2021
+Heritable Human Genome Editing,Recent advances in CRISPR-based genome editing technology and its applications in cardiovascular research,springer.com,https://link.springer.com/article/10.1186/s40779-023-00447-x,,2023
+Heritable Human Genome Editing,CRISPR in public health: The health equity implications and role of community in gene-editing research and applications,aphapublications.org,https://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2023.307315,,2023
+Heritable Human Genome Editing,Multifaceted regulation and functions of 53BP1 in NHEJ‑mediated DSB repair,spandidos-publications.com,https://www.spandidos-publications.com/ijmm/50/1/90,,2022
+Heritable Human Genome Editing,Meiotic recombination: insights into its mechanisms and its role in human reproduction with a special focus on non-obstructive azoospermia,oup.com,https://academic.oup.com/humupd/article-abstract/28/6/763/6591785,,2022
+Heritable Human Genome Editing,CRISPR nuclease off-target activity and mitigation strategies,frontiersin.org,https://www.frontiersin.org/articles/10.3389/fgeed.2022.1050507/full,,2022
+Heritable Human Genome Editing,"You can't keep a bad idea down: Dark history, death, and potential rebirth of eugenics",wiley.com,https://anatomypubs.onlinelibrary.wiley.com/doi/abs/10.1002/ar.24849,,2022
+Heritable Human Genome Editing,Correction of RNA splicing defect in β654-thalassemia mice using CRISPR/Cas9 gene-editing technology,nih.gov,https://pmc.ncbi.nlm.nih.gov/articles/PMC9152980/,,2021
+Heritable Human Genome Editing,Pediatric and adolescent oncofertility in male patients—From alpha to omega,mdpi.com,https://www.mdpi.com/2073-4425/12/5/701,,2021
+Heritable Human Genome Editing,The ethical status of germline gene editing in future space missions: The special case of positive selection on Earth for future space missions,springer.com,https://link.springer.com/article/10.1007/s11569-023-00438-1,,2023
+Heritable Human Genome Editing,"Current landscape of gene‐editing technology in biomedicine: Applications, advantages, challenges, and perspectives",wiley.com,https://onlinelibrary.wiley.com/doi/abs/10.1002/mco2.155,,2022
+Heritable Human Genome Editing,Modular Ontologies for Genetically Modified People and their Bioethical Implications,springer.com,https://link.springer.com/article/10.1007/s11569-024-00459-4,,2024
+Heritable Human Genome Editing,Self-organization in embryonic development: myth and reality,springer.com,https://link.springer.com/chapter/10.1007/978-3-031-04783-1_8,,2022
+Heritable Human Genome Editing,The intelligence spectrum: Unraveling the path from ani to asi,jcbi.org,https://jcbi.org/index.php/Main/article/view/779,,2024
+Heritable Human Genome Editing,Trisomic rescue via allele-specific multiple chromosome cleavage using CRISPR-Cas9 in trisomy 21 cells,oup.com,https://academic.oup.com/pnasnexus/article-abstract/4/2/pgaf022/8016019,,2025
+Heritable Human Genome Editing,Dynamics of reproductive genetic technologies: Perspectives of professional stakeholders,plos.org,https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0269719,,2022
+Heritable Human Genome Editing,"In Utero Therapies, the Next Frontier",wiley.com,https://onlinelibrary.wiley.com/doi/abs/10.1002/ajmg.c.32135,,2025
+Heritable Human Genome Editing,Governing heritable human genome editing: a textual history and a proposal for the future,liebertpub.com,https://www.liebertpub.com/doi/abs/10.1089/crispr.2021.0043,,2021
+Heritable Human Genome Editing,DNA Double Strand Breaks cause chromosome loss through sister chromatid tethering in human embryos,biorxiv.org,https://www.biorxiv.org/content/10.1101/2022.03.10.483502.abstract,,2022
+Heritable Human Genome Editing,The Art of Nanoimmunobiotechnomedicine in Stem Cells and Gene Editing,jelsciences.com,https://ipv4.jelsciences.com/articles/jbres1804.pdf,,2023
+Heritable Human Genome Editing,As Gods: A Moral History of the Genetic Age,.,,,2022
+Heritable Human Genome Editing,Early zygotic engineering promotes targeted large transgene integration and direct production of fully transgenic animals,biorxiv.org,https://www.biorxiv.org/content/10.1101/2024.09.29.615605.abstract,,2024
+Heritable Human Genome Editing,DSB repair kinetics impair CRISPR-Cas9 editing in human embryos,biorxiv.org,https://www.biorxiv.org/content/10.1101/2025.05.07.652614.abstract,,2025
+Heritable Human Genome Editing,The Genetic Age: Our Perilous Quest to Edit Life,google.com,https://books.google.com/books?hl=en&lr=&id=LqNTEAAAQBAJ&oi=fnd&pg=PP22&ots=4niEIqOadR&sig=H8p2YomjDFavpFgOfLOpQZapQPo,,2022
+Heritable Human Genome Editing,"In utero fetal therapy: Stem cells, cell transplantation, gene therapy, and CRISPR-Cas9",lww.com,"https://journals.lww.com/clinicalobgyn/fulltext/2021/12000/In_Utero_Fetal_Therapy__Stem_Cells,_Cell.15.aspx",,2021
+Heritable Human Genome Editing,Bioethical Decision Making and Genome Editing,springer.com,https://link.springer.com/chapter/10.1007/978-3-031-29451-8_3,,2023
+Heritable Human Genome Editing,БЕСПЛОДИЕ–ГЛОБАЛЬНАЯ МЕДИКОСОЦИАЛЬНАЯ ПРОБЛЕМА МИРОВОГО СООБЩЕСТВА,cyberleninka.ru,https://cyberleninka.ru/article/n/besplodie-globalnaya-medikosotsialnaya-problema-mirovogo-soobschestva,,2024
+Heritable Human Genome Editing,Human Heritable Genome Editing-Potential and Current Status for Clinical Use.,ris.org.in,https://www.ris.org.in/sites/default/files/2021-09/ABDR%20March%202021.pdf#page=11,,2021

@@ -271,15 +271,17 @@ def fetch_pubmed_metadata_book(book_id):
 
     response = requests.get(base_url + "efetch.fcgi", params=params)
     response.raise_for_status()
-    print(response.text)
     soup = BeautifulSoup(response.content, 'xml')
 
     title = soup.find("BookDocument").find("BookTitle").get_text(strip=True) if soup.find("BookTitle") else "No title available."
     abstract = soup.find("Abstract").get_text(strip=True) if soup.find("Abstract") else "No abstract available."
 
-    print(title, abstract)
     book_url = f"https://www.ncbi.nlm.nih.gov/books/{book_id}/"
-    return f"{title} {abstract}", book_url, "", ""  # Dates not usually included
+    if title == 'No title available.':
+        output_text = "Error finding book"
+    else:
+        output_text = "{title} {abstract}"
+    return output_text, book_url, "", ""  # Dates not usually included
 
 
 # Federal Register Handling
@@ -331,8 +333,9 @@ def scrape_url(url):
             if format == 'article':
                 return fetch_pubmed_metadata_article(pmid)
             else:
-                return fetch_pubmed_metadata_book(pmid)
-
+                output = fetch_pubmed_metadata_book(pmid)
+                if output[0] != "Error finding book":
+                    return output
         if is_federal_register_url(url):
             resolved_url = solve_captcha_manually(url)
             return get_federal_register_content(resolved_url)
@@ -376,13 +379,13 @@ def run():
             last_modified_date = get_url_date_last_modified(mod_date, pub_date, source_date)
             if text.startswith("Error"):
                 print(f"Error scraping {url}: {text}")
-                writer.writerow([title, year, domain, url, url_title, "", recommendation, last_modified_date])
+                writer.writerow([title, year, domain, url, url_title, text, recommendation, last_modified_date])
             else:
                 preview = text[:100000]
                 writer.writerow([title, year, domain, url, url_title, preview, recommendation, last_modified_date])
 
 if __name__ == "__main__":
-    book, id = extract_pubmed_id('https://www.ncbi.nlm.nih.gov/books/NBK447260/')
-    print(id)
-    print(fetch_pubmed_metadata_book(id))
-    #run()
+    # book, id = extract_pubmed_id('https://www.ncbi.nlm.nih.gov/books/NBK447260/')
+    # print(id)
+    # print(fetch_pubmed_metadata_book(id))
+    run()

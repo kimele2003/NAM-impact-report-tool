@@ -64,7 +64,7 @@ def search_paper_by_title(title, api_key=None):
         return None
 
 
-def get_citations_with_context(paper_id, limit=DEFAULT_LIMIT, api_key=None):
+def get_citations_with_context(pub_title, paper_id, limit=DEFAULT_LIMIT, api_key=None):
     """
     Get papers that cite the specified paper along with citation contexts.
     """
@@ -93,6 +93,7 @@ def get_citations_with_context(paper_id, limit=DEFAULT_LIMIT, api_key=None):
             for citation in data.get("data", []):
                 contexts = citation.get("contexts", [])
                 citations.append({
+                    'publication': pub_title, 
                     "title": citation["citingPaper"]["title"],
                     "venue": citation["citingPaper"]["venue"],
                     "url": citation["citingPaper"]["url"],
@@ -133,7 +134,7 @@ def search_paper_google_scholar(title):
         return None
 
 
-def get_citing_papers_google_scholar(cites_id, max_pages=3):
+def get_citing_papers_google_scholar(pub_title, cites_id, max_pages=3):
     """
     Get citing papers from Google Scholar using a citation ID.
     """
@@ -154,6 +155,7 @@ def get_citing_papers_google_scholar(cites_id, max_pages=3):
 
             for result in data.get("organic_results", []):
                 citing_papers.append({
+                    "publication": pub_title,
                     "title": result.get("title", "N/A"),
                     "venue": extract_base_domain(result.get("link", "")),
                     "url": result.get("link", ""),
@@ -174,7 +176,7 @@ def save_to_csv(data, filename):
     Save citation data to a CSV file.
     """
     with open(filename, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=["title", "venue", "url", "contexts", "year"])
+        writer = csv.DictWriter(file, fieldnames=["publication", "title", "venue", "url", "contexts", "year"])
         writer.writeheader()
         writer.writerows(data)
     print(f"Saved data to {filename}")
@@ -188,13 +190,13 @@ def get_citations_by_title(title, filename):
     # Try Semantic Scholar first
     paper_id = search_paper_by_title(title)
     if paper_id:
-        citations = get_citations_with_context(paper_id)
+        citations = get_citations_with_context(title, paper_id)
         save_to_csv(citations, filename)
 
     # Fallback to Google Scholar
     cites_id = search_paper_google_scholar(title)
     if cites_id:
-        citations = get_citing_papers_google_scholar(cites_id)
+        citations = get_citing_papers_google_scholar(title, cites_id)
         save_to_csv(citations, filename)
     else:
         print("Unable to find citations.")
