@@ -105,7 +105,7 @@ def query_gemini_multiple(text, source_url, recommendation):
 
     Please respond in this exact format:
     EVIDENCE: [yes | no | partially]
-    EXPLANATION: [detailed reasoning explaining why the evidence does or does not support the recommendation]
+    EXPLANATION: [detailed reasoning explaining why the text does or does not support the recommendation]
     CITATION: [short quote from the text supporting the explanation, if EVIDENCE is yes or partially; otherwise write "N/A"]
     NATIONAL_ACADEMY_OF_MEDICINE_MENTIONED: [yes | no]
     NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A"]
@@ -152,10 +152,10 @@ def query_gemini_multiple(text, source_url, recommendation):
     - Respond in the following format:
 
     FINAL_EVIDENCE: [yes | no | partially]
-    FINAL_EXPLANATION: [detailed reasoning explaining why this is the most accurate conclusion]
+    FINAL_EXPLANATION: [detailed reasoning explaining why this is the most accurate conclusion. don't reference that there are multiple responses, just provide your final explanation, as if it were the only response.]
     FINAL_CITATION: [short quote from the text supporting the explanation, if EVIDENCE is yes or partially; otherwise write "N/A"]
     FINAL_NATIONAL_ACADEMY_OF_MEDICINE_MENTIONED: [yes | no]
-    FINAL_NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A"]
+    FINAL_NAM_EXPLANATION: [brief explanation of how NAM is mentioned, if yes; otherwise write "N/A. don't reference that there are multiple responses, just provide your final explanation, as if it were the only response."]
     
     Text to analyze from {source_url}:
     {text}
