@@ -4,6 +4,7 @@ import csv
 import time
 import shutil
 import tempfile
+import signal
 import requests
 import pandas as pd
 from io import BytesIO
@@ -34,6 +35,12 @@ HEADLESS_OPTIONS = ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage"]
 
 # Ensure ChromeDriver is installed
 chromedriver_autoinstaller.install()
+
+class TimeoutException(Exception):
+    pass
+
+def timeout_handler(signum, frame):
+    raise TimeoutException("Scraping timed out.")
 
 
 # Utility Functions
@@ -82,7 +89,9 @@ def scrape_text_with_selenium(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     try:
+        driver.set_page_load_timeout(30)
         driver.get(url)
+
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
         time.sleep(3)  # Respect crawl-delay
 
@@ -118,7 +127,7 @@ def scrape_text_with_selenium(url):
     finally:
         driver.quit()
 
-def solve_captcha_manually(url):
+def solve_captcha_manually(url, timeout=60):
     options = Options()
     # Headless must be disabled to solve CAPTCHA
     # Create unique user data directory
@@ -296,6 +305,17 @@ def get_federal_register_content(url):
     except Exception as e:
         return f"Error processing {url}: {e}", url, "", ""
 
+def scrape_with_timeout(url, timeout=60):
+    """Scrape a URL with a global timeout."""
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(timeout)  # Set the timeout
+
+    try:
+        return scrape_url(url)
+    except TimeoutException:
+        return f"Error: Timeout while scraping {url}", url, "", ""
+    finally:
+        signal.alarm(0)  # Disable the alarm
 
 # Main Scraping Logic
 def scrape_url(url):
@@ -324,9 +344,9 @@ def scrape_url(url):
 def run():
     """Run the scraping and Gemini pipeline."""
     # === Paths ===
-    base_dir = os.path.dirname(os.path.abspath(__file__)) 
-    input_csv = os.path.join(base_dir, '..', 'data', 'cta_search_results.csv')
-    output_csv = os.path.join(base_dir, '..', 'data', 'webscrape_intermediate_output.csv')
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    input_csv = os.path.join(base_dir, 'data', 'cta_search_results.csv')
+    output_csv = os.path.join(base_dir, 'data', 'webscrape_intermediate_output.csv')
 
     with open(input_csv, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -347,8 +367,9 @@ def run():
             year = row['Publication Year']
             url = row["URL"]
             print(f"Processing: {url}")
-
-            text, final_url, mod_date, pub_date = scrape_url(url)
+            
+            text, final_url, mod_date, pub_date = scrape_with_timeout(url)
+            
             domain = extract_base_domain(final_url)
             last_modified_date = get_url_date_last_modified(mod_date, pub_date, source_date)
             if text.startswith("Error"):

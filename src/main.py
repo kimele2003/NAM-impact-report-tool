@@ -4,17 +4,17 @@ import os
 from dotenv import load_dotenv
 
 # Step 1: Run full pipeline (fetch + process data)
-import fetch_input
-import extract_ctas
-import generate_links
-import webscraper 
-import assess_evidence
-import scholarly_citations
+from src import fetch_input
+from src import extract_ctas
+from src import generate_links
+from src import webscraper 
+from src import assess_evidence
+from src import scholarly_citations
 
 # Step 2: Export results
-import export_recommendations
-import export_scholarly_citations
-import export_exec_summary
+from src import export_recommendations
+from src import export_scholarly_citations
+from src import export_exec_summary
 
 def main():
     print("🔁 Starting full NAM Impact Report pipeline...\n")

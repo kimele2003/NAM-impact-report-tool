@@ -210,9 +210,9 @@ def run():
         lines = [line.strip() for line in f if line.strip()]
         publication_year = lines[-1]
         publication_title = " ".join(lines[:-1])
-    
-    output_filename = "../data/scholarly_citations_output.csv"
-    get_citations_by_title(publication_title, output_filename)
+
+    output_csv = os.path.join(data_dir, 'scholarly_citations_output.csv')
+    get_citations_by_title(publication_title, output_csv)
 
 if __name__ == "__main__":
     run()
