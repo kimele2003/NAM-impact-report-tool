@@ -271,11 +271,13 @@ def fetch_pubmed_metadata_book(book_id):
 
     response = requests.get(base_url + "efetch.fcgi", params=params)
     response.raise_for_status()
+    print(response.text)
     soup = BeautifulSoup(response.content, 'xml')
 
     title = soup.find("BookDocument").find("BookTitle").get_text(strip=True) if soup.find("BookTitle") else "No title available."
     abstract = soup.find("Abstract").get_text(strip=True) if soup.find("Abstract") else "No abstract available."
 
+    print(title, abstract)
     book_url = f"https://www.ncbi.nlm.nih.gov/books/{book_id}/"
     return f"{title} {abstract}", book_url, "", ""  # Dates not usually included
 
@@ -305,7 +307,7 @@ def get_federal_register_content(url):
     except Exception as e:
         return f"Error processing {url}: {e}", url, "", ""
 
-def scrape_with_timeout(url, timeout=60):
+def scrape_with_timeout(url, timeout=120):
     """Scrape a URL with a global timeout."""
     signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(timeout)  # Set the timeout
@@ -368,7 +370,7 @@ def run():
             url = row["URL"]
             print(f"Processing: {url}")
             
-            text, final_url, mod_date, pub_date = scrape_with_timeout(url)
+            text, final_url, mod_date, pub_date = scrape_url(url)
             
             domain = extract_base_domain(final_url)
             last_modified_date = get_url_date_last_modified(mod_date, pub_date, source_date)
@@ -380,4 +382,7 @@ def run():
                 writer.writerow([title, year, domain, url, url_title, preview, recommendation, last_modified_date])
 
 if __name__ == "__main__":
-    run()
+    book, id = extract_pubmed_id('https://www.ncbi.nlm.nih.gov/books/NBK447260/')
+    print(id)
+    print(fetch_pubmed_metadata_book(id))
+    #run()
