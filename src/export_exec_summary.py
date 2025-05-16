@@ -3,6 +3,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from pyairtable import Table
 import google.generativeai as genai
+import re
 
 # === Load environment variables ===
 load_dotenv()
