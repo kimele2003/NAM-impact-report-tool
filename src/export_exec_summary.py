@@ -19,6 +19,7 @@ def run():
     recommendations_path = os.path.join(data_dir, "webscrape_output.csv")
     citations_path = os.path.join(data_dir, "scholarly_citations_output.csv")
     cta_input_path = os.path.join(data_dir, "cta_input.txt")
+    METADATA_PATH = os.path.join(data_dir, "metadata.txt")
 
     # === Executive Summary Generator ===
     def generate_executive_summary(reco_path, citations_path, excerpt_path):
@@ -28,10 +29,11 @@ def run():
         with open(excerpt_path, "r", encoding="utf-8") as f:
             excerpt = f.read()[:2000]  # Trim to 2000 characters
 
-        if "Title" not in reco_df.columns or reco_df["Title"].dropna().empty:
-            raise ValueError("❗ 'Title' column is missing or empty in the input CSV.")
-        else:
-            publication_title = reco_df["Title"].dropna().unique()[0]
+        # === Load publication title and year ===
+        with open(METADATA_PATH, "r", encoding="utf-8") as f:
+            lines = [line.strip() for line in f if line.strip()]
+            publication_year = lines[-1]
+            publication_title = " ".join(lines[:-1])
 
         prompt = f"""
             Below is a short excerpt from the publication to provide context only. **Do not quote or cite it directly**:
@@ -63,11 +65,8 @@ def run():
         # Remove all markdown bold/italic markers: ** and *
         clean_output = re.sub(r"(\*\*|\*)", "", raw_output)
 
-        # Add publication title at the top
-        formatted_output = f"Publication Title: {publication_title}\n\n{clean_output.strip()}"
-
         # Clean up any double newlines
-        formatted_output = re.sub(r"\n{2,}", "\n\n", formatted_output)
+        formatted_output = re.sub(r"\n{2,}", "\n\n", clean_output.strip())
 
         return publication_title, formatted_output
 
