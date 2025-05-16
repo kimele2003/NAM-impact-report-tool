@@ -58,7 +58,18 @@ def run():
             """
 
         response = model.generate_content(prompt)
-        return publication_title, response.text.strip()
+        raw_output = response.text.strip()
+
+        # Remove all markdown bold/italic markers: ** and *
+        clean_output = re.sub(r"(\*\*|\*)", "", raw_output)
+
+        # Add publication title at the top
+        formatted_output = f"Publication Title: {publication_title}\n\n{clean_output.strip()}"
+
+        # Clean up any double newlines
+        formatted_output = re.sub(r"\n{2,}", "\n\n", formatted_output)
+
+        return publication_title, formatted_output
 
     # === Upload to Airtable ===
     def upload_summary_to_airtable(title, summary):
