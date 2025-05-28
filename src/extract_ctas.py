@@ -16,6 +16,7 @@ model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
 def extract_calls_to_action(text):
     prompt = (
         "From the following policy report text, extract **all** labeled calls to action, including all items labeled as 'Recommendation', 'Priority', or similar, even if they are sub-items (e.g., 'Priority 1-2', 'Priority 1-3'). "
+        "Also extract calls to action that follow introductory phrases like “We have identified five priorities,” “The following are key actions,” or other similar lead-ins, even if individual items are numbered (e.g. 1-5) but not explicitly labeled as priorities or recommendations."
         "Do NOT change the titles, numbering, or wording of the recommendations. "
         "Make sure to include indented sub-points or bullet points under each recommendation or priority."
 

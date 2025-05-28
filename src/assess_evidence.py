@@ -182,7 +182,7 @@ def run():
                                  "no", "Unable to retrieve data", "N/A", "no", "N/A", row["URL Date Last Modified"]])
             else:
                 try:
-                    gemini_response = query_gemini_multiple(text, url, recommendation)
+                    gemini_response = query_gemini(text, url, recommendation)
                     evidence, explanation, citation, nam_mentioned, nam_explanation = parse_gemini_response(gemini_response)
                     writer.writerow([row["Title"], row["Publication Year"], row["Domain"], url, row["URL Title"], text, recommendation,
                                  evidence, explanation, citation, nam_mentioned, nam_explanation, row["URL Date Last Modified"]])

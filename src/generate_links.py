@@ -21,10 +21,21 @@ model = genai.GenerativeModel("models/gemini-2.0-flash")
 # === STEP 1: Extract CTA blocks ===
 def extract_cta_blocks(cta_output):
     pattern = re.compile(
-        r"((?:Recommendation|Priority)\s+[A-D]?(?:\d+)?(?:[-.]\d+)?\s*:.*?)(?=\n(?:Recommendation|Priority)\s+[A-D]?(?:\d+)?(?:[-.]\d+)?\s*:|\Z)",
-        re.DOTALL | re.IGNORECASE,
+        r"""(
+            # Match blocks starting with "Recommendation" or "Priority"
+            (?:Recommendation|Priority)\s+[A-D]?(?:\d+)?(?:[-.]\d+)?\s*:.*?
+            (?=\n(?:Recommendation|Priority)\s+[A-D]?(?:\d+)?(?:[-.]\d+)?\s*:|\Z)
+            |
+            # Match blocks starting with formats like A-3., 1-2., 1., etc.
+            [A-D]?-?\d+(?:[-.]\d+)?\.\s+[A-Za-z].*?
+            (?=\n[A-D]?-?\d+(?:[-.]\d+)?\.\s+[A-Za-z]|\Z)
+        )""",
+        re.DOTALL | re.IGNORECASE | re.VERBOSE,
     )
-    return [m.strip() for m in pattern.findall(cta_output)]
+
+    matches = pattern.findall(cta_output)
+    return [m.strip() for m in matches]
+
 
 # === STEP 2: Generate search queries using Gemini ===
 def generate_search_queries_for_ctas(cta_list):

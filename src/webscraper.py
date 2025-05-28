@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from htmldate import find_date
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import tldextract
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -201,6 +202,8 @@ def extract_text_from_pdf(pdf_path):
 def handle_pdf_url(url):
     """Handle scraping for PDF URLs."""
     try:
+        if 'hhs' in url:
+            raise Exception("Unable to download HHS PDFs.")
         pdf_path, final_url = download_pdf_with_selenium(url)
         if pdf_path:
             pdf_text = extract_text_from_pdf(pdf_path)
@@ -309,17 +312,26 @@ def get_federal_register_content(url):
     except Exception as e:
         return f"Error processing {url}: {e}", url, "", ""
 
-def scrape_with_timeout(url, timeout=120):
-    """Scrape a URL with a global timeout."""
-    signal.signal(signal.SIGALRM, timeout_handler)
-    signal.alarm(timeout)  # Set the timeout
+def scrape_with_timeout(url, timeout=30):
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(scrape_url, url)
+        try:
+            return future.result(timeout=timeout)
+        except TimeoutError:
+            return f"Error: Timeout while scraping {url}", url, "", ""
 
-    try:
-        return scrape_url(url)
-    except TimeoutException:
-        return f"Error: Timeout while scraping {url}", url, "", ""
-    finally:
-        signal.alarm(0)  # Disable the alarm
+# def scrape_with_timeout(url, timeout=120):
+#     """Scrape a URL with a global timeout."""
+#     signal.signal(signal.SIGALRM, timeout_handler)
+#     signal.alarm(timeout)  # Set the timeout
+
+#     try:
+#         return scrape_url(url)
+#     except TimeoutException:
+#         return f"Error: Timeout while scraping {url}", url, "", ""
+#     finally:
+#         signal.alarm(0)  # Disable the alarm
+
 
 # Main Scraping Logic
 def scrape_url(url):

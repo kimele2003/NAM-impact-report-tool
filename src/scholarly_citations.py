@@ -203,8 +203,7 @@ def get_citations_by_title(title, filename):
         with open(filename, "w", newline='', encoding="utf-8") as output_file:
             writer = csv.writer(output_file)
             writer.writerow([
-                "Title", "Publication Year", "Domain", "URL", "URL Title", "Extracted Content", "Recommendation",
-                "URL Date Last Modified"
+                "publication", "title", "venue", "url", "contexts", "year"
             ])
 
 def run():

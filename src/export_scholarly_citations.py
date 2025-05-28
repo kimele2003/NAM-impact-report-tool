@@ -38,6 +38,7 @@ def run():
         venue = str(row.get("venue", "")).strip()
         url = str(row.get("url", "")).strip()
         contexts = str(row.get("contexts", "")).strip()
+        year = str(row.get("year", "")).strip()
 
         record_key = (title, contexts)
 
@@ -51,7 +52,8 @@ def run():
             "Title": title,
             "Venue": venue,
             "URL": url,
-            "Contexts": contexts
+            "Contexts": contexts,
+            "Date Published": year
         }
 
         try:
