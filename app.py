@@ -7,6 +7,7 @@ app = Flask(__name__)
 @app.route('/trigger', methods=['POST'])
 def trigger_script():
     data = request.json
+    print("✅ /trigger endpoint called with data:", data)  # Log this
     threading.Thread(target=run_my_script, args=(data,)).start()
     return {'status': 'Script triggered'}, 200
 
