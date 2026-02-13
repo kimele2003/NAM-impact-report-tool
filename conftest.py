@@ -2,8 +2,7 @@ import os
 import sys
 import types
 
-# Minimal test-time stubs to avoid import-time side-effects from heavy third-party libs.
-# This keeps the test run lightweight and prevents network/binary installs during import.
+# Minimal test-time stubs.
 
 # Ensure environment variables exist so modules that read them don't error at import
 for k in (
